@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { useRoom } from '../hooks/useRoom';
@@ -13,6 +13,32 @@ export default function RoomPage() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState(null);
+  const deckHeightRef = useRef(210);
+  const [deckHeight, setDeckHeight] = useState(210);
+
+  const handleDividerDrag = useCallback((e) => {
+    const startY = e.clientY;
+    const startHeight = deckHeightRef.current;
+
+    const onMove = (ev) => {
+      const delta = startY - ev.clientY;
+      const next = Math.min(340, Math.max(130, startHeight + delta));
+      deckHeightRef.current = next;
+      setDeckHeight(next);
+    };
+
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    };
+
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'ns-resize';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }, []);
 
   const { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle } =
     useRoom(roomId, user);
@@ -171,11 +197,11 @@ export default function RoomPage() {
                 <VoteBoard roomState={roomState} userId={user.id} />
               </div>
 
-              {/* Divider */}
-              <div className="zone-divider" />
+              {/* Draggable divider */}
+              <div className="zone-divider" onMouseDown={handleDividerDrag} />
 
               {/* Zone 2 — this user's voting deck */}
-              <div className="zone-deck">
+              <div className="zone-deck" style={{ height: `${deckHeight}px` }}>
                 <p className="voting-hint">
                   {roomState.revealed
                     ? 'Round complete — host can start a new round'
