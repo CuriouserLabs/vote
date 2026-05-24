@@ -86,29 +86,40 @@ export function useRoom(roomId, user) {
     peer.on('error', (err) => {
       if (destroyed) return;
       if (err.type === 'unavailable-id') {
-        // Host ID taken → join as client
+        // Host ID taken → the failed peer is unusable for connecting.
+        // Create a fresh Peer with an auto-assigned ID, then connect as client.
         roleRef.current = 'client';
         setRole('client');
         setStatus('connecting');
 
-        const conn = peer.connect(roomPeerId(roomId), { reliable: true });
-        connRef.current = conn;
+        peer.destroy(); // clean up the failed host-attempt peer
 
-        conn.on('open', () => {
+        const clientPeer = new Peer();
+        peerRef.current = clientPeer;
+
+        clientPeer.on('open', () => {
           if (destroyed) return;
-          setStatus('connected');
-          send(conn, {
-            type: 'join',
-            user: { id: user.id, displayName: user.displayName, isHost: false },
+          const conn = clientPeer.connect(roomPeerId(roomId), { reliable: true });
+          connRef.current = conn;
+
+          conn.on('open', () => {
+            if (destroyed) return;
+            setStatus('connected');
+            send(conn, {
+              type: 'join',
+              user: { id: user.id, displayName: user.displayName, isHost: false },
+            });
           });
+
+          conn.on('data', (msg) => {
+            if (msg.type === 'state') setRoomState(msg.payload);
+          });
+
+          conn.on('close', () => { if (!destroyed) setStatus('disconnected'); });
+          conn.on('error', () => { if (!destroyed) setStatus('error'); });
         });
 
-        conn.on('data', (msg) => {
-          if (msg.type === 'state') setRoomState(msg.payload);
-        });
-
-        conn.on('close', () => { if (!destroyed) setStatus('disconnected'); });
-        conn.on('error', () => { if (!destroyed) setStatus('error'); });
+        clientPeer.on('error', () => { if (!destroyed) setStatus('error'); });
       } else {
         setStatus('error');
       }
@@ -119,7 +130,7 @@ export function useRoom(roomId, user) {
       if (connRef.current?.open) {
         send(connRef.current, { type: 'leave', userId: user.id });
       }
-      peer.destroy();
+      peerRef.current?.destroy();
     };
   }, [roomId, user.id, user.displayName, updateState]);
 
