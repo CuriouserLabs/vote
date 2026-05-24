@@ -40,7 +40,7 @@ export default function RoomPage() {
     document.addEventListener('mouseup', onUp);
   }, []);
 
-  const { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle } =
+  const { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle, makeCoHost } =
     useRoom(roomId, user);
 
   const isHost = role === 'host';
@@ -88,7 +88,7 @@ export default function RoomPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  if (status === 'disconnected') {
+  if (status === 'disconnected' && role === 'client') {
     return (
       <div className="room-overlay">
         <div className="room-overlay-card">
@@ -142,6 +142,7 @@ export default function RoomPage() {
             {roomState?.participants?.map((p) => {
               const voted = roomState.votes[p.id] !== undefined;
               const isMe = p.id === user.id;
+              const pIsCoHost = roomState.coHosts?.includes(p.id);
               return (
                 <div key={p.id} className={`participant-item ${isMe ? 'self' : ''} ${voted ? 'has-voted' : ''}`}>
                   <div className="participant-avatar" style={{ background: avatarColor(p.id) }}>
@@ -152,8 +153,20 @@ export default function RoomPage() {
                       {p.displayName}
                       {isMe && <em> (you)</em>}
                     </span>
-                    {p.isHost && <span className="host-badge">host</span>}
+                    <div className="participant-badges">
+                      {p.isHost && <span className="host-badge">host</span>}
+                      {pIsCoHost && <span className="cohost-badge">co-host</span>}
+                    </div>
                   </div>
+                  {isHost && !p.isHost && (
+                    <button
+                      className={`cohost-toggle ${pIsCoHost ? 'active' : ''}`}
+                      onClick={() => makeCoHost(p.id)}
+                      title={pIsCoHost ? 'Remove co-host' : 'Make co-host'}
+                    >
+                      {pIsCoHost ? '★' : '☆'}
+                    </button>
+                  )}
                   <span
                     className={`vote-indicator ${voted ? 'voted' : 'waiting'}`}
                     title={voted ? 'Voted ✓' : 'Waiting…'}

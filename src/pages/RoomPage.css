@@ -196,6 +196,12 @@
   font-size: 0.72rem;
 }
 
+.participant-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
 .host-badge {
   background: rgba(99, 102, 241, 0.2);
   color: #a5b4fc;
@@ -206,6 +212,39 @@
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
   width: fit-content;
+}
+
+.cohost-badge {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.cohost-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 0.1rem 0.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.cohost-toggle:hover {
+  color: #fbbf24;
+  transform: scale(1.2);
+}
+
+.cohost-toggle.active {
+  color: #fbbf24;
 }
 
 .vote-indicator {
