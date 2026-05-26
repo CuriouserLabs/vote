@@ -202,6 +202,26 @@
   gap: 0.25rem;
 }
 
+/* Actions slot: holds handover + cohost-toggle + vote-indicator */
+.participant-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.lead-badge {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  width: fit-content;
+}
+
 .host-badge {
   background: rgba(99, 102, 241, 0.2);
   color: #a5b4fc;
@@ -226,20 +246,45 @@
   width: fit-content;
 }
 
-.cohost-toggle {
+.handover-btn {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.15);
   padding: 0.1rem 0.2rem;
   line-height: 1;
   flex-shrink: 0;
   transition: color 0.15s, transform 0.15s;
 }
 
+.participant-item:hover .handover-btn {
+  color: rgba(99, 102, 241, 0.6);
+}
+
+.handover-btn:hover {
+  color: var(--primary) !important;
+  transform: translateX(2px);
+}
+
+.cohost-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.15);
+  padding: 0.1rem 0.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.participant-item:hover .cohost-toggle:not(.active) {
+  color: rgba(251, 191, 36, 0.5);
+}
+
 .cohost-toggle:hover {
-  color: #fbbf24;
+  color: #fbbf24 !important;
   transform: scale(1.2);
 }
 

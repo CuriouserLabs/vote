@@ -41,6 +41,7 @@ export function useRoom(roomId, user) {
         // browser crash — empty participants map left behind). Claim as host.
         await setDoc(roomRef, {
           hostId: user.id,
+          activeHostId: user.id,
           participants: {
             [user.id]: { displayName: user.displayName, isHost: true },
           },
@@ -57,8 +58,10 @@ export function useRoom(roomId, user) {
         // Active room — join as participant (or rejoin as host/co-host)
         const data = snap.data();
         const isOriginalHost = data.hostId === user.id;
+        const activeHostId = data.activeHostId || data.hostId;
+        const isActiveHost = activeHostId === user.id;
         const isCoHost = data.coHosts?.includes(user.id);
-        setRole(isOriginalHost || isCoHost ? 'host' : 'client');
+        setRole(isActiveHost || isCoHost ? 'host' : 'client');
         setStatus('connected');
 
         // Register ourselves if not already in participants
@@ -81,10 +84,13 @@ export function useRoom(roomId, user) {
           return;
         }
         const data = snap.data();
-        // Re-evaluate role whenever state updates (co-host may have changed)
-        const isOriginalHost = data.hostId === user.id;
+        // Re-evaluate role on every snapshot.
+        // activeHostId tracks who currently holds control (falls back to
+        // hostId for rooms created before this field existed).
+        const activeHostId = data.activeHostId || data.hostId;
+        const isActiveHost = activeHostId === user.id;
         const isCoHost = data.coHosts?.includes(user.id);
-        setRole(isOriginalHost || isCoHost ? 'host' : 'client');
+        setRole(isActiveHost || isCoHost ? 'host' : 'client');
 
         const normalized = normalizeState(data);
         roomStateRef.current = normalized;
@@ -148,5 +154,14 @@ export function useRoom(roomId, user) {
     }).catch(console.error);
   }, [roomId]);
 
-  return { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle, makeCoHost };
+  // Transfer active control to another participant.
+  // The caller immediately loses host controls; the recipient gains them.
+  // The original hostId remains unchanged (purely informational).
+  const handoverTo = useCallback((userId) => {
+    updateDoc(doc(db, 'rooms', roomId), {
+      activeHostId: userId,
+    }).catch(console.error);
+  }, [roomId]);
+
+  return { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle, makeCoHost, handoverTo };
 }

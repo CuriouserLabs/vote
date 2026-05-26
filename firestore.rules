@@ -7,15 +7,17 @@ rules_version = '2';
 // Collection: rooms
 // Document ID: 8-character alphanumeric room code (e.g. "a1b2c3d4")
 // Fields:
-//   - hostId:      string (required, immutable) — nanoid user ID of creator
+//   - hostId:       string (required, immutable) — nanoid user ID of creator
+//   - activeHostId: string (required, mutable)  — who currently holds primary control;
+//                   starts equal to hostId; updated via handover action
 //   - participants: map (required) — keyed by userId
 //       { displayName: string(1–50), isHost: bool }
-//   - votes:       map (required) — keyed by userId, value is number or "?"
-//   - revealed:    bool (required)
-//   - round:       number int >= 1 (required)
-//   - storyTitle:  string 0–200 chars (required)
-//   - coHosts:     list of userId strings, max 50 (required)
-//   - createdAt:   timestamp (required, immutable)
+//   - votes:        map (required) — keyed by userId, value is number or "?"
+//   - revealed:     bool (required)
+//   - round:        number int >= 1 (required)
+//   - storyTitle:   string 0–200 chars (required)
+//   - coHosts:      list of userId strings, max 50 (required)
+//   - createdAt:    timestamp (required, immutable)
 //
 // Note: This app uses client-generated nanoid user IDs stored in
 // localStorage rather than Firebase Auth. Rules therefore cannot
@@ -60,9 +62,11 @@ service cloud.firestore {
 
     // Full document validator used on create
     function isValidRoomCreate(data) {
-      return data.keys().hasOnly(['hostId', 'participants', 'votes', 'revealed', 'round', 'storyTitle', 'coHosts', 'createdAt'])
-          && data.keys().hasAll(['hostId', 'participants', 'votes', 'revealed', 'round', 'storyTitle', 'coHosts', 'createdAt'])
+      return data.keys().hasOnly(['hostId', 'activeHostId', 'participants', 'votes', 'revealed', 'round', 'storyTitle', 'coHosts', 'createdAt'])
+          && data.keys().hasAll(['hostId', 'activeHostId', 'participants', 'votes', 'revealed', 'round', 'storyTitle', 'coHosts', 'createdAt'])
           && isValidUserId(data.hostId)
+          && isValidUserId(data.activeHostId)
+          && data.activeHostId == data.hostId  // must start as the creator
           && isValidParticipantsMap(data.participants)
           && isValidVotesMap(data.votes)
           && data.revealed is bool
@@ -78,10 +82,12 @@ service cloud.firestore {
     // Post-update full document validator used on update
     function isValidRoomUpdate(after, before) {
       // Only known fields allowed in the resulting document
-      return after.keys().hasOnly(['hostId', 'participants', 'votes', 'revealed', 'round', 'storyTitle', 'coHosts', 'createdAt'])
+      return after.keys().hasOnly(['hostId', 'activeHostId', 'participants', 'votes', 'revealed', 'round', 'storyTitle', 'coHosts', 'createdAt'])
           // Immutable fields must not change
           && after.hostId == before.hostId
           && after.createdAt == before.createdAt
+          // activeHostId must be a valid user ID when present
+          && (!('activeHostId' in after) || isValidUserId(after.activeHostId))
           // Type and size validation
           && isValidParticipantsMap(after.participants)
           && isValidVotesMap(after.votes)

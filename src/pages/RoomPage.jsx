@@ -40,10 +40,12 @@ export default function RoomPage() {
     document.addEventListener('mouseup', onUp);
   }, []);
 
-  const { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle, makeCoHost } =
+  const { roomState, status, role, submitVote, revealVotes, resetRound, setStoryTitle, makeCoHost, handoverTo } =
     useRoom(roomId, user);
 
   const isHost = role === 'host';
+  const activeHostId = roomState?.activeHostId || roomState?.hostId;
+  const isActiveHost = activeHostId === user.id; // current holder of primary control
   const myVote = roomState?.votes?.[user.id];
   const hasAnyVote = roomState && Object.keys(roomState.votes).length > 0;
 
@@ -162,6 +164,7 @@ export default function RoomPage() {
               const voted = roomState.votes[p.id] !== undefined;
               const isMe = p.id === user.id;
               const pIsCoHost = roomState.coHosts?.includes(p.id);
+              const pIsActiveHost = p.id === activeHostId;
               return (
                 <div key={p.id} className={`participant-item ${isMe ? 'self' : ''} ${voted ? 'has-voted' : ''}`}>
                   <div className="participant-avatar" style={{ background: avatarColor(p.id) }}>
@@ -173,25 +176,39 @@ export default function RoomPage() {
                       {isMe && <em> (you)</em>}
                     </span>
                     <div className="participant-badges">
-                      {p.isHost && <span className="host-badge">host</span>}
+                      {pIsActiveHost && <span className="lead-badge">lead</span>}
+                      {p.isHost && !pIsActiveHost && <span className="host-badge">host</span>}
                       {pIsCoHost && <span className="cohost-badge">co-host</span>}
                     </div>
                   </div>
-                  {isHost && !p.isHost && (
-                    <button
-                      className={`cohost-toggle ${pIsCoHost ? 'active' : ''}`}
-                      onClick={() => makeCoHost(p.id)}
-                      title={pIsCoHost ? 'Remove co-host' : 'Make co-host'}
+                  <div className="participant-actions">
+                    {/* Handover — only the active host can transfer primary control */}
+                    {isActiveHost && !isMe && (
+                      <button
+                        className="handover-btn"
+                        onClick={() => handoverTo(p.id)}
+                        title={`Hand over control to ${p.displayName}`}
+                      >
+                        →
+                      </button>
+                    )}
+                    {/* Co-host toggle — any host can manage backup hosts */}
+                    {isHost && !p.isHost && (
+                      <button
+                        className={`cohost-toggle ${pIsCoHost ? 'active' : ''}`}
+                        onClick={() => makeCoHost(p.id)}
+                        title={pIsCoHost ? 'Remove co-host' : 'Make co-host'}
+                      >
+                        {pIsCoHost ? '★' : '☆'}
+                      </button>
+                    )}
+                    <span
+                      className={`vote-indicator ${voted ? 'voted' : 'waiting'}`}
+                      title={voted ? 'Voted ✓' : 'Waiting…'}
                     >
-                      {pIsCoHost ? '★' : '☆'}
-                    </button>
-                  )}
-                  <span
-                    className={`vote-indicator ${voted ? 'voted' : 'waiting'}`}
-                    title={voted ? 'Voted ✓' : 'Waiting…'}
-                  >
-                    {voted ? '✓' : '·'}
-                  </span>
+                      {voted ? '✓' : '·'}
+                    </span>
+                  </div>
                 </div>
               );
             })}
