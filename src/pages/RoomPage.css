@@ -184,16 +184,26 @@
 .participant-name {
   color: var(--text-light);
   font-size: 0.82rem;
+  font-weight: 500;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.participant-name-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: 500;
+  min-width: 0;
 }
 
 .participant-name em {
   color: var(--text-muted);
   font-style: normal;
   font-size: 0.72rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .participant-badges {

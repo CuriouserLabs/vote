@@ -172,8 +172,8 @@ export default function RoomPage() {
                   </div>
                   <div className="participant-meta">
                     <span className="participant-name">
-                      {p.displayName}
-                      {isMe && <em> (you)</em>}
+                      <span className="participant-name-text">{p.displayName}</span>
+                      {isMe && <em>(you)</em>}
                     </span>
                     <div className="participant-badges">
                       {pIsActiveHost && <span className="lead-badge">lead</span>}
