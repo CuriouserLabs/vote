@@ -1,14 +1,14 @@
 # Sprint Poker
 
-Real-time sprint planning poker for agile teams. Create a room, share the link, and vote on story points simultaneously — no account, no backend, no setup required.
+Real-time sprint planning poker for agile teams. Create a room, share the link, and vote on story points simultaneously — no account required. Works on any network including corporate firewalls.
 
 ## Features
 
 - **Instant rooms** — generate a room with one click and share the URL
-- **Real-time P2P** — powered by WebRTC (PeerJS); no server or database needed
+- **Real-time sync** — powered by Firestore; works on any network including corporate firewalls
 - **Fibonacci voting** — standard planning poker values: 0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ?
 - **Hidden votes** — cards stay face-down until the host reveals them
-- **Co-host support** — host can promote any participant to co-host; if the host drops, a co-host automatically takes over with all state preserved
+- **Co-host support** — host can promote any participant to co-host so the session survives if the host disconnects
 - **Story titles** — host can label what's being estimated each round
 - **Persistent identity** — display name saved in browser; no re-login on refresh
 - **Multiple simultaneous rooms** — each team gets an isolated session
@@ -16,7 +16,7 @@ Real-time sprint planning poker for agile teams. Create a room, share the link, 
 ## Tech stack
 
 - [React 19](https://react.dev) + [Vite](https://vite.dev)
-- [PeerJS](https://peerjs.com) for WebRTC peer-to-peer communication
+- [Cloud Firestore](https://firebase.google.com/docs/firestore) for real-time state sync
 - [React Router v7](https://reactrouter.com)
 - [Firebase Hosting](https://firebase.google.com/docs/hosting) for deployment
 - CSS custom properties — no UI framework
@@ -32,9 +32,9 @@ Open `http://localhost:5173`, set your display name, and create a room.
 
 ## How it works
 
-When you create a room, your browser registers as the **host peer** using the room ID as the PeerJS peer identifier. Team members who open the same link connect directly to your browser via WebRTC. The host holds all session state and broadcasts updates to every participant. No data leaves the browser network — there is no backend.
+When you create a room, a Firestore document at `rooms/{roomId}` is created with you as the host. Everyone who opens the same link subscribes to that document via `onSnapshot` — all state changes (votes, reveals, new rounds) are written to Firestore and instantly reflected on every participant's screen. Communication goes through Firebase's servers over HTTPS, so it works on any network including corporate firewalls that block WebRTC/UDP.
 
-The host can promote any participant to **co-host** (★ star button in the sidebar). If the primary host disconnects, the co-host automatically claims the host role and the session continues uninterrupted — votes, round number, and story title are all preserved. Regular participants reconnect automatically once the co-host takes over.
+The host can promote any participant to **co-host** (★ star button in the sidebar). Co-hosts have the same controls as the host (reveal, reset, story title) and the session continues without interruption if the original host disconnects.
 
 ## Deployment
 
@@ -46,7 +46,7 @@ To deploy a new version:
 firebase deploy
 ```
 
-This runs `npm run build` automatically (via the `predeploy` hook in `firebase.json`) and pushes the built `dist/` directory to Firebase. The SPA rewrite rule ensures direct links to rooms (`/room/:roomId`) resolve correctly.
+This runs `npm run build` automatically (via the `predeploy` hook in `firebase.json`) and pushes the built `dist/` directory to Firebase. The SPA rewrite rule ensures direct links to rooms (`/room/:roomId`) resolve correctly. Firestore rules are deployed separately with `firebase deploy --only firestore:rules`.
 
 You need the [Firebase CLI](https://firebase.google.com/docs/cli) installed and logged in (`firebase login`) to deploy.
 
