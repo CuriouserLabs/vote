@@ -36,21 +36,21 @@
 .vote-cards-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .vote-slot {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.55rem;
 }
 
 /* ── 3-D flip card ── */
 .vote-flip-card {
-  width: 62px;
-  height: 88px;
-  perspective: 500px;
+  width: 76px;
+  height: 108px;
+  perspective: 600px;
 }
 
 .vfc-inner {
@@ -92,12 +92,12 @@
 
 .vfc-suit {
   color: rgba(255, 255, 255, 0.35);
-  font-size: 1.6rem;
+  font-size: 2rem;
 }
 
 .vfc-empty-dot {
   color: rgba(255, 255, 255, 0.18);
-  font-size: 1.5rem;
+  font-size: 1.85rem;
 }
 
 /* Front face — shown when flipped (rotateY 180°) */
@@ -109,7 +109,7 @@
 }
 
 .vfc-value {
-  font-size: 1.6rem;
+  font-size: 1.95rem;
   font-weight: 800;
   color: var(--text-dark);
 }
@@ -117,12 +117,12 @@
 /* Name label below card */
 .vote-slot-name {
   color: var(--text-muted);
-  font-size: 0.72rem;
-  max-width: 88px;
+  font-size: 0.8rem;
+  max-width: 100px;
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .vote-slot-name.is-me {
@@ -137,11 +137,11 @@
 }
 
 .you-tag {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   background: rgba(99, 102, 241, 0.2);
   color: #a5b4fc;
   border-radius: 3px;
-  padding: 0 0.3rem;
+  padding: 0 0.35rem;
   flex-shrink: 0;
   white-space: nowrap;
 }
