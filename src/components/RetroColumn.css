@@ -1,0 +1,152 @@
+.retro-column {
+  flex: 1;
+  min-width: 280px;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.retro-column__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 3px solid;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.retro-column__icon {
+  font-size: 1rem;
+}
+
+.retro-column__title {
+  flex: 1;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.01em;
+}
+
+.retro-column__count {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* ── Cards list ── */
+.retro-column__cards {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.retro-column__empty {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 1.5rem 0;
+  opacity: 0.6;
+}
+
+/* ── Add card area ── */
+.retro-column__add {
+  padding: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.retro-column__add-btn {
+  width: 100%;
+  background: none;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.retro-column__add-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.retro-column__add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.retro-column__add-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  font-family: inherit;
+  padding: 0.6rem;
+  resize: none;
+  outline: none;
+  line-height: 1.5;
+}
+
+.retro-column__add-input:focus {
+  border-color: var(--primary);
+}
+
+.retro-column__add-input::placeholder {
+  color: var(--text-muted);
+}
+
+.retro-column__add-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.retro-column__add-submit {
+  flex: 1;
+  padding: 0.45rem;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.retro-column__add-submit:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.retro-column__add-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.retro-column__add-cancel {
+  padding: 0.45rem 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.retro-column__add-cancel:hover {
+  background: rgba(255, 255, 255, 0.12);
+}

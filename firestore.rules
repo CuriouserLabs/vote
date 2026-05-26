@@ -122,5 +122,72 @@ service cloud.firestore {
       // logic is enforced in the app via a transaction.
       allow delete: if isValidRoomId(roomId);
     }
+
+    // ===============================================================
+    // retros/{retroId}
+    // ===============================================================
+
+    function isValidRetroSettings(s) {
+      return s is map
+          && s.anonymous is bool
+          && s.hideCards is bool
+          && s.revealed is bool;
+    }
+
+    function isValidCardsMap(c) {
+      return c is map && c.size() <= 500;
+    }
+
+    function isValidColumnsArray(c) {
+      return c is list && c.size() <= 20;
+    }
+
+    function isValidTimer(t) {
+      return t is map
+          && t.duration is number
+          && t.startedAt is number
+          && t.running is bool;
+    }
+
+    function isValidRetroCreate(data) {
+      return data.keys().hasOnly(['hostId', 'activeHostId', 'participants', 'coHosts', 'columns', 'cards', 'settings', 'timer', 'createdAt'])
+          && data.keys().hasAll(['hostId', 'activeHostId', 'participants', 'coHosts', 'columns', 'cards', 'settings', 'timer', 'createdAt'])
+          && isValidUserId(data.hostId)
+          && isValidUserId(data.activeHostId)
+          && data.activeHostId == data.hostId
+          && isValidParticipantsMap(data.participants)
+          && isValidCoHosts(data.coHosts)
+          && isValidColumnsArray(data.columns)
+          && isValidCardsMap(data.cards)
+          && isValidRetroSettings(data.settings)
+          && data.settings.revealed == false
+          && isValidTimer(data.timer)
+          && data.createdAt is timestamp;
+    }
+
+    function isValidRetroUpdate(after, before) {
+      return after.keys().hasOnly(['hostId', 'activeHostId', 'participants', 'coHosts', 'columns', 'cards', 'settings', 'timer', 'createdAt'])
+          && after.hostId == before.hostId
+          && after.createdAt == before.createdAt
+          && (!('activeHostId' in after) || isValidUserId(after.activeHostId))
+          && isValidParticipantsMap(after.participants)
+          && isValidCoHosts(after.coHosts)
+          && isValidColumnsArray(after.columns)
+          && isValidCardsMap(after.cards)
+          && isValidRetroSettings(after.settings)
+          && isValidTimer(after.timer);
+    }
+
+    match /retros/{retroId} {
+      allow read: if isValidRoomId(retroId);
+
+      allow create: if isValidRoomId(retroId)
+                    && isValidRetroCreate(request.resource.data);
+
+      allow update: if isValidRoomId(retroId)
+                    && isValidRetroUpdate(request.resource.data, resource.data);
+
+      allow delete: if isValidRoomId(retroId);
+    }
   }
 }

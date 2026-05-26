@@ -1,0 +1,352 @@
+/* ── Layout ── */
+.retro-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 61px);
+  overflow: hidden;
+}
+
+/* ── Toast ── */
+.retro-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-dark);
+  color: var(--text-light);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: toastIn 0.3s ease;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Sub-header ── */
+.retro-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.retro-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.retro-label {
+  display: block;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.retro-code {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-light);
+  letter-spacing: -0.5px;
+}
+
+/* Reuse the back-btn and copy-btn patterns from RoomPage */
+.retro-header .back-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.retro-header .back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+}
+
+.retro-header .copy-btn {
+  padding: 0.45rem 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.retro-header .copy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Body ── */
+.retro-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Participants sidebar ── */
+.retro-participants {
+  width: 260px;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.retro-participants h3 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+}
+
+.retro-participant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.retro-participant {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.retro-participant.self {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.retro-participant-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.retro-participant-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.retro-participant-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.retro-participant-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.retro-participant-name em {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  flex-shrink: 0;
+}
+
+.retro-participant-badges {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 2px;
+}
+
+.retro-participant-badges .lead-badge,
+.retro-participant-badges .host-badge,
+.retro-participant-badges .cohost-badge {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+.retro-participant-badges .lead-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.retro-participant-badges .host-badge {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.retro-participant-badges .cohost-badge {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+}
+
+.retro-participant-card-count {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 7px;
+  border-radius: 8px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.retro-participants-hint {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin: 0.75rem 0 0;
+  line-height: 1.5;
+}
+
+/* ── Main board ── */
+.retro-board {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.retro-columns {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+}
+
+.retro-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.retro-loading .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Footer ── */
+.retro-footer {
+  padding: 0.6rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.retro-host-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.retro-footer-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-right: auto;
+}
+
+.retro-guest-note {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── Overlay screens ── */
+.retro-overlay {
+  min-height: calc(100vh - 61px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.retro-overlay-card {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  max-width: 400px;
+}
+
+.retro-overlay-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.retro-overlay-card h2 {
+  color: var(--text-light);
+  margin: 0 0 0.75rem;
+}
+
+.retro-overlay-card p {
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .retro-participants {
+    width: 60px;
+    padding: 0.5rem;
+  }
+  .retro-participant-meta,
+  .retro-participant-card-count,
+  .retro-participants h3 {
+    display: none;
+  }
+  .retro-columns {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .retro-column {
+    min-width: 85vw;
+    scroll-snap-align: start;
+  }
+}

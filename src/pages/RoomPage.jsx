@@ -70,8 +70,8 @@ export default function RoomPage() {
 
   // Dynamic page title
   useEffect(() => {
-    document.title = `Room ${roomId} · Sprint Poker`;
-    return () => { document.title = 'Sprint Poker'; };
+    document.title = `Room ${roomId} · Scrum Suite`;
+    return () => { document.title = 'Scrum Suite'; };
   }, [roomId]);
 
   // Toast when participant count increases

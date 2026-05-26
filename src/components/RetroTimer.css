@@ -1,0 +1,63 @@
+.retro-timer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.retro-timer__display {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-light);
+  font-variant-numeric: tabular-nums;
+  min-width: 48px;
+  text-align: center;
+}
+
+.retro-timer__display--expired {
+  color: var(--danger);
+  animation: timerPulse 1s ease infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.retro-timer__stop {
+  padding: 0.25rem 0.6rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.retro-timer__stop:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.retro-timer__presets {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.retro-timer__preset {
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.retro-timer__preset:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-light);
+}
