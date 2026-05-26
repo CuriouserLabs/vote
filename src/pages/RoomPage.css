@@ -107,10 +107,10 @@
 
 /* ── Participants sidebar ── */
 .participants-panel {
-  width: 210px;
+  width: 260px;
   flex-shrink: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 1.25rem 0.875rem;
+  padding: 1.25rem 1rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -551,8 +551,8 @@
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .participants-panel {
-    width: 100px;
-    padding: 1rem 0.5rem;
+    width: 130px;
+    padding: 1rem 0.625rem;
   }
 
   .participant-name em { display: none; }
