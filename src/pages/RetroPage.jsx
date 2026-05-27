@@ -120,7 +120,9 @@ export default function RetroPage() {
 
   const activeColumns = (retroState?.columns || [])
     .map(getColumnById)
-    .filter(Boolean);
+    .filter((col) => col && col.id !== 'previous-actions');
+
+  const showPreviousActionItems = retroState?.columns?.includes('previous-actions');
 
   return (
     <div className="retro-page">
@@ -211,13 +213,15 @@ export default function RetroPage() {
                   onToggleVote={toggleVote}
                 />
               ))}
-              <PreviousActionItems
-                items={retroState.previousActionItems || {}}
-                isHost={isHost}
-                onAdd={addActionItem}
-                onToggle={toggleActionItem}
-                onDelete={deleteActionItem}
-              />
+              {showPreviousActionItems && (
+                <PreviousActionItems
+                  items={retroState.previousActionItems || {}}
+                  isHost={isHost}
+                  onAdd={addActionItem}
+                  onToggle={toggleActionItem}
+                  onDelete={deleteActionItem}
+                />
+              )}
             </div>
           )}
         </main>
