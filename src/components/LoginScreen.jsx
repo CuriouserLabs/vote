@@ -16,9 +16,9 @@ export default function LoginScreen() {
   return (
     <div className="login-screen">
       <div className="login-card">
-        <div className="login-icon">&#9827;</div>
-        <h1>Sprint Poker</h1>
-        <p className="login-subtitle">Planning made simple</p>
+        <div className="login-icon">&#9830;</div>
+        <h1>Scrum Suite</h1>
+        <p className="login-subtitle">Plan, reflect, improve</p>
         <form onSubmit={handleSubmit}>
           <input
             type="text"

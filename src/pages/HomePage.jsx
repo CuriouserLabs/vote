@@ -7,12 +7,14 @@ import './HomePage.css';
 export default function HomePage() {
   const { user } = useUser();
   const navigate = useNavigate();
+  const [selectedMode, setSelectedMode] = useState(null);
   const [joinCode, setJoinCode] = useState('');
   const [joinError, setJoinError] = useState('');
 
-  const createRoom = () => {
-    const roomId = nanoid(8);
-    navigate(`/room/${roomId}`);
+  const createSession = () => {
+    const id = nanoid(8);
+    const path = selectedMode === 'poker' ? `/room/${id}` : `/retro/${id}`;
+    navigate(path);
   };
 
   const handleJoin = (e) => {
@@ -20,15 +22,25 @@ export default function HomePage() {
     const input = joinCode.trim();
     if (!input) return;
 
-    // Accept full URL or just the room code
-    const match = input.match(/\/room\/([a-zA-Z0-9_-]{8,})/);
-    const roomId = match ? match[1] : input;
-
-    if (roomId.length < 6) {
-      setJoinError('Invalid room code. Please check the link and try again.');
+    const match = input.match(/\/(room|retro)\/([a-zA-Z0-9_-]{8,})/);
+    if (match) {
+      navigate(`/${match[1]}/${match[2]}`);
       return;
     }
-    navigate(`/room/${roomId}`);
+
+    if (input.length < 6) {
+      setJoinError('Invalid code. Please check the link and try again.');
+      return;
+    }
+
+    const path = selectedMode === 'poker' ? `/room/${input}` : `/retro/${input}`;
+    navigate(path);
+  };
+
+  const resetMode = () => {
+    setSelectedMode(null);
+    setJoinCode('');
+    setJoinError('');
   };
 
   return (
@@ -36,43 +48,73 @@ export default function HomePage() {
       <div className="home-hero">
         <h1>Plan smarter,<br />ship faster.</h1>
         <p className="home-tagline">
-          Real-time story point voting for agile teams — no logins, no setup, just paste a link.
+          Real-time collaboration for agile teams — no logins, no setup, just paste a link.
         </p>
       </div>
 
-      <div className="home-actions">
-        <div className="action-card create-card">
-          <div className="action-icon">&#9827;</div>
-          <h2>Create a Room</h2>
-          <p>Start a new planning session and share the link with your team.</p>
-          <button className="btn-primary" onClick={createRoom}>
-            Create Room
+      {!selectedMode ? (
+        <div className="mode-selector">
+          <button className="mode-card mode-poker" onClick={() => setSelectedMode('poker')}>
+            <div className="mode-icon">&#9827;</div>
+            <h2>Sprint Poker</h2>
+            <p>Estimate story points together with your team in real time.</p>
+          </button>
+
+          <button className="mode-card mode-retro" onClick={() => setSelectedMode('retro')}>
+            <div className="mode-icon">&#128260;</div>
+            <h2>Retro Board</h2>
+            <p>Reflect on your sprint — what went well, what to improve.</p>
           </button>
         </div>
+      ) : (
+        <div className="session-actions">
+          <button className="back-to-modes" onClick={resetMode}>
+            ← Back
+          </button>
 
-        <div className="action-divider">or</div>
+          <div className="session-mode-badge" data-mode={selectedMode}>
+            {selectedMode === 'poker' ? '♣ Sprint Poker' : '🔄 Retro Board'}
+          </div>
 
-        <div className="action-card join-card">
-          <div className="action-icon">&#128279;</div>
-          <h2>Join a Room</h2>
-          <p>Paste a room link or code to join an existing session.</p>
-          <form onSubmit={handleJoin}>
-            <input
-              type="text"
-              placeholder="Paste room link or code"
-              value={joinCode}
-              onChange={(e) => {
-                setJoinCode(e.target.value);
-                setJoinError('');
-              }}
-            />
-            {joinError && <p className="join-error">{joinError}</p>}
-            <button className="btn-secondary" type="submit" disabled={!joinCode.trim()}>
-              Join Room
-            </button>
-          </form>
+          <div className="home-actions">
+            <div className="action-card create-card">
+              <div className="action-icon">{selectedMode === 'poker' ? '♣' : '🔄'}</div>
+              <h2>{selectedMode === 'poker' ? 'Create a Room' : 'Create a Retro'}</h2>
+              <p>
+                {selectedMode === 'poker'
+                  ? 'Start a new planning session and share the link with your team.'
+                  : 'Start a new retrospective and invite your team to reflect.'}
+              </p>
+              <button className="btn-primary" onClick={createSession}>
+                {selectedMode === 'poker' ? 'Create Room' : 'Create Retro'}
+              </button>
+            </div>
+
+            <div className="action-divider">or</div>
+
+            <div className="action-card join-card">
+              <div className="action-icon">&#128279;</div>
+              <h2>Join a Session</h2>
+              <p>Paste a session link or code to join an existing session.</p>
+              <form onSubmit={handleJoin}>
+                <input
+                  type="text"
+                  placeholder="Paste session link or code"
+                  value={joinCode}
+                  onChange={(e) => {
+                    setJoinCode(e.target.value);
+                    setJoinError('');
+                  }}
+                />
+                {joinError && <p className="join-error">{joinError}</p>}
+                <button className="btn-secondary" type="submit" disabled={!joinCode.trim()}>
+                  Join Session
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="home-footer-tip">
         Signed in as <strong>{user.displayName}</strong> · Not you? Click your name in the header to change it.

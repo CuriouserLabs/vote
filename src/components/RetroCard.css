@@ -1,0 +1,140 @@
+.retro-card {
+  position: relative;
+  border-left: 3px solid;
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  background: rgba(255, 255, 255, 0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
+  animation: cardAppear 0.2s ease;
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.retro-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.retro-card--hidden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.retro-card__hidden-icon {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* ── Action buttons (top-right, visible on hover) ── */
+.retro-card__actions {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.retro-card:hover .retro-card__actions {
+  opacity: 1;
+}
+
+.retro-card__action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-muted);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.retro-card__action-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--text-light);
+}
+
+.retro-card__action-btn--delete:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+/* ── Card text ── */
+.retro-card__text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-light);
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.retro-card__edit-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  font-family: inherit;
+  padding: 0.5rem;
+  resize: vertical;
+  outline: none;
+  line-height: 1.5;
+}
+
+.retro-card__edit-input:focus {
+  border-color: var(--primary);
+}
+
+/* ── Footer (author + vote) ── */
+.retro-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.retro-card__author {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.retro-card__vote-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.retro-card__vote-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.retro-card__vote-btn--active {
+  font-weight: 700;
+}
+
+.retro-card__vote-count {
+  font-size: 0.75rem;
+}

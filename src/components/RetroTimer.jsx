@@ -1,0 +1,70 @@
+import { useState, useEffect, useRef } from 'react';
+import './RetroTimer.css';
+
+const PRESETS = [
+  { label: '3m', seconds: 180 },
+  { label: '5m', seconds: 300 },
+  { label: '10m', seconds: 600 },
+];
+
+export default function RetroTimer({ timer, isHost, onStart, onStop }) {
+  const [remaining, setRemaining] = useState(null);
+  const intervalRef = useRef(null);
+
+  const isRunning = timer?.running && timer?.startedAt && timer?.duration;
+
+  useEffect(() => {
+    if (!isRunning) {
+      setRemaining(null);
+      clearInterval(intervalRef.current);
+      return;
+    }
+
+    const tick = () => {
+      const elapsed = (Date.now() - timer.startedAt) / 1000;
+      const left = Math.max(0, timer.duration - elapsed);
+      setRemaining(left);
+    };
+
+    tick();
+    intervalRef.current = setInterval(tick, 1000);
+    return () => clearInterval(intervalRef.current);
+  }, [isRunning, timer?.startedAt, timer?.duration]);
+
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const isExpired = remaining !== null && remaining <= 0;
+
+  if (!isHost && !isRunning) return null;
+
+  return (
+    <div className={`retro-timer ${isExpired ? 'retro-timer--expired' : ''}`}>
+      {isRunning ? (
+        <>
+          <span className={`retro-timer__display ${isExpired ? 'retro-timer__display--expired' : ''}`}>
+            {isExpired ? "Time's up!" : formatTime(remaining)}
+          </span>
+          {isHost && (
+            <button className="retro-timer__stop" onClick={onStop}>Stop</button>
+          )}
+        </>
+      ) : isHost ? (
+        <div className="retro-timer__presets">
+          {PRESETS.map((p) => (
+            <button
+              key={p.seconds}
+              className="retro-timer__preset"
+              onClick={() => onStart(p.seconds)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
